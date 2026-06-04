@@ -9,7 +9,7 @@ resource "aws_route53_zone" "primary" {
   }
 }
 
-# 실전 필수: ALB 인그레스 등에서 즉시 가져다 쓸 수 있는 와일드카드 SSL 인증서 발급
+# ALB 인그레스 등에서 즉시 가져다 쓸 수 있는 와일드카드 SSL 인증서 발급
 resource "aws_acm_certificate" "cert" {
   domain_name       = var.domain_name
   validation_method = "DNS"
