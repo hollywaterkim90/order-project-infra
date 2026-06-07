@@ -15,3 +15,9 @@ variable "domain_name" {
   type        = string
   default     = "hollywaterkim.shop" 
 }
+
+variable "subdomain" {
+  description = "접속에 사용할 서브도메인 이름"
+  type        = string
+  default     = "api" # 👈 나중에 싹 바꾸고 싶을 때 여기만 "app"이나 "service"로 변경!
+}

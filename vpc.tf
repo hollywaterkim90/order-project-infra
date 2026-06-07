@@ -12,7 +12,7 @@ module "vpc" {
 
   # 실전형 NAT 게이트웨이 설정 (PROD 환경은 AZ별 1개 권장, 비용 절감 필요시 single_nat_gateway = true)
   enable_nat_gateway     = true
-  single_nat_gateway    = false
+  single_nat_gateway    = true
   one_nat_gateway_per_az = true
 
   enable_dns_hostnames = true
