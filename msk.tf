@@ -68,3 +68,10 @@ resource "aws_msk_cluster" "kafka" {
     Terraform   = "true"
   }
 }
+
+# 3. 🌟 애플리케이션(ordering/product) Deployment의 KAFKA_SERVERS에 넣을 브로커 주소 출력
+#    client_broker = TLS_PLAINTEXT 이므로 PLAINTEXT(9092) 주소를 사용합니다.
+output "msk_bootstrap_brokers" {
+  description = "ordering/product depl_svc.yml의 KAFKA_SERVERS 값으로 붙여넣을 MSK PLAINTEXT bootstrap brokers"
+  value       = aws_msk_cluster.kafka.bootstrap_brokers
+}

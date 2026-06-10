@@ -53,6 +53,10 @@ resource "aws_secretsmanager_secret_version" "db_secret_val" {
   secret_string = jsonencode({
     username = "postgres_admin"
     password = random_password.db_password.result
+    # 🌟 ESO가 DB_HOST로 매핑할 수 있도록 RDS 접속 정보 추가
+    host     = aws_db_instance.postgres.address
+    port     = 5432
+    dbname   = "ordermsa"
   })
 }
 
@@ -77,6 +81,9 @@ resource "aws_db_instance" "postgres" {
   # 🔐 Secrets Manager에서 생성된 크레덴셜 동적 주입
   username = "postgres_admin"
   password = random_password.db_password.result
+
+  # 🌟 애플리케이션이 접속하는 초기 DB 자동 생성 (앱 jdbc url: .../ordermsa)
+  db_name = "ordermsa"
 
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
