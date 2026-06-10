@@ -77,3 +77,49 @@ resource "aws_ecr_lifecycle_policy" "ecr_policy" {
 }
 EOF
 }
+
+# 4. API Gateway 서비스용 이미지 창고
+resource "aws_ecr_repository" "apigateway_ecr" {
+  name                 = "${var.environment}-apigateway"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Name        = "${var.environment}-apigateway-ecr"
+    Terraform   = "true"
+  }
+}
+
+# 기존 Lifecycle Policy의 for_each 대상을 4개로 확장합니다.
+resource "aws_ecr_lifecycle_policy" "ecr_policy" {
+  for_each = toset([
+    aws_ecr_repository.member_ecr.name,
+    aws_ecr_repository.ordering_ecr.name,
+    aws_ecr_repository.product_ecr.name,
+    aws_ecr_repository.apigateway_ecr.name # 🌟 게이트웨이 추가!
+  ])
+
+  repository = each.value
+  policy     = <<EOF
+{
+    "rules": [
+        {
+            "rulePriority": 1,
+            "description": "Keep last 5 images to optimize AWS storage cost",
+            "selection": {
+                "tagStatus": "any",
+                "countType": "imageCountMoreThan",
+                "countNumber": 5
+            },
+            "action": {
+                "type": "expire"
+            }
+        }
+    ]
+}
+EOF
+}
+
